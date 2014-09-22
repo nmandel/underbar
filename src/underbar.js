@@ -228,12 +228,23 @@ var _ = {};
         return x;
       }
     }
+    var everyVal = _.every(collection, function(item) {
+      return ! iterator(item);
+    });
+    return !everyVal;
+    /*
+    if (arguments.length < 2) {
+      iterator = function(x) {
+        return x;
+      }
+    }
     return _.reduce(collection, function(checker, item) {
       if (iterator(item) == true || iterator(item) == "yes") {
         checker = true;
       }
       return checker;
     }, false);
+*/
     // TIP: There's a very clever way to re-use every() here.
   };
 
