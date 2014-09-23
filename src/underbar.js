@@ -232,6 +232,8 @@ var _ = {};
       return ! iterator(item);
     });
     return !everyVal;
+
+    // Without re-using every():
     /*
     if (arguments.length < 2) {
       iterator = function(x) {
@@ -244,7 +246,8 @@ var _ = {};
       }
       return checker;
     }, false);
-*/
+    */
+
     // TIP: There's a very clever way to re-use every() here.
   };
 
@@ -268,6 +271,17 @@ var _ = {};
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var isFirst = true;
+    for (var key in arguments) {
+      if (isFirst === true) {
+        isFirst = false;
+      } else {
+        for (var interiorKey in arguments[key]) {
+          obj[interiorKey] = arguments[key][interiorKey];
+        }
+      }
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
