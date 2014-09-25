@@ -341,28 +341,11 @@ var _ = {};
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    /*var pastArgs = [];
-    var checker = function (item) {
-      for (var i = 0; i < pastArgs.length; i++) {
-        var key = Object.keys(pastArgs[i])[0];
-        if (key == item) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    return function() {
-      if (checker(arguments[0])) {
-        result = func.apply(this, arguments);
-        pastArgs[arguments[0]] = result;
-      }
-      return pastArgs[arguments[0]];
-    } */
 
     var alreadyComputed = {};
     return function() {
       var args = Array.prototype.slice.call(arguments);
+      var result;
       if (!alreadyComputed.hasOwnProperty(args)) {
         result = func.apply(this, arguments);
         console.log(result);
