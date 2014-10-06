@@ -403,6 +403,36 @@ var _ = {};
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    var arr = [];
+    for (var i in collection) {
+        console.log(collection[i]);
+        if (arr.length === 0) {
+            arr.push(collection[i]);
+        } else {
+            var ready = true;
+            for (var j = 0; j < arr.length; j++) {
+                if (ready) {
+                    if (collection[i] === undefined) {
+                      arr.push(collection[i]);
+                      ready = false;
+                    }
+                    if (ready && typeof iterator === 'function' && (iterator(arr[j]) > iterator(collection[i]) || iterator(arr[j] === undefined))) {
+                        arr.splice(j, 0, collection[i]);
+                        ready = false;
+                    }
+                    else if (iterator === 'length' && arr[j].length > collection[i].length) {
+                      arr.splice(j, 0, collection[i]);
+                      ready = false;
+                    }
+                    else if (ready && j === arr.length-1) {
+                        arr.push(collection[i]);
+                        ready = false;
+                    }
+                }
+            }
+        }
+    }
+    return arr;
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -411,23 +441,83 @@ var _ = {};
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
-  };
+    var arr = [];
+    var highLength = 0;
+    for (var a in arguments) {
+        if (arguments[a].length > highLength) {
+            highLength = arguments[a].length;
+        }
+    }
+    for (var b = 0; b < highLength; b++) {
+        arr[b] = [];
+    }
+    for (var i in arguments) {
+      for (var j = 0; j < highLength; j++) {
+        if (!arguments[i][j]) {
+            arr[j].push(undefined);
+        } else {
+            arr[j].push(arguments[i][j]);
+        }
+      }
+    }
+    return arr;
+};
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
   // The new array should contain all elements of the multidimensional array.
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    if (result === undefined) {
+        result = [];
+    }
+    if (Array.isArray(nestedArray)) {
+      for (var i in nestedArray) {
+        _.flatten(nestedArray[i], result);
+        
+      }
+    } else {
+       result.push(nestedArray);
+    }
+    return result;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    var shared = [];
+    for (var i in arguments) {
+      for (var a = 0; a < arguments[i].length; a++) {
+        var isShared = true;
+        for (var b in arguments) {
+          if (arguments[b].indexOf(arguments[i][a]) === -1) {
+            isShared = false;
+          }
+        }
+        if (isShared === true && shared.indexOf(arguments[i][a]) === -1) {
+          shared.push(arguments[i][a]);
+        }
+      }
+    }
+    return shared;
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var diffs = [];
+    for (var i = 0; i < arguments[0].length; i++) {
+      var isDiff = true;
+      for (var j in arguments) {
+        if (j > 0 && arguments[j].indexOf(arguments[0][i]) !== -1 ) {
+          isDiff = false;
+        }
+      }
+      if (isDiff) {
+        diffs.push(arguments[0][i])
+      }
+    }
+    return diffs;
   };
 
 
